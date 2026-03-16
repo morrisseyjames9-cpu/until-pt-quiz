@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>What&rsquo;s the right model for your PT career? &mdash; UNTIL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #FAFAF7;
+  color: #1A1A18;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 100dvh;
+}
+:root {
+  --bg: #FAFAF7;
+  --surface: #FFFFFF;
+  --text: #1A1A18;
+  --muted: #7A7A72;
+  --hint: #A8A8A0;
+  --border: rgba(0,0,0,0.08);
+  --border-h: rgba(0,0,0,0.15);
+  --teal: #0F6E56;
+  --teal-bg: #E1F5EE;
+  --teal-text: #085041;
+  --blue-bg: #E6F1FB;
+  --blue-text: #0C447C;
+  --amber-bg: #FAEEDA;
+  --amber-text: #633806;
+  --purple-bg: #EEEDFE;
+  --purple-text: #3C3489;
+  --coral-bg: #FAECE7;
+  --coral-text: #712B13;
+  --pad: 20px;
+  --max: 600px;
+}
+
+/* PROGRESS */
+#prog {
+  position: fixed; top: 0; left: 0;
+  height: 3px; background: var(--teal);
+  width: 0%; transition: width 400ms cubic-bezier(0.4,0,0.2,1);
+  z-index: 200;
+}
+
+/* HEADER */
+#hdr {
+  display: none;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px var(--pad);
+  align-items: center; justify-content: space-between;
+}
+#hdr.on { display: flex; }
+.hdr-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--hint); }
+.hdr-step { font-size: 13px; color: var(--hint); font-weight: 500; }
+
+/* SCREENS */
+.screen { display: none; }
+.screen.on { display: flex; flex-direction: column; }
+
+/* LANDING */
+#s-land {
+  min-height: 100dvh;
+  justify-content: center;
+  padding: 60px var(--pad);
+  max-width: var(--max);
+  margin: 0 auto;
+  width: 100%;
+}
+.land-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--hint); margin-bottom: 40px; }
+.land-h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(32px, 7vw, 48px);
+  font-weight: 400; line-height: 1.12;
+  margin-bottom: 20px;
+}
+.land-h1 em { font-style: italic; color: var(--teal); }
+.land-p { font-size: 16px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+.land-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 60px;
+  background: var(--teal-bg); font-size: 12px; font-weight: 500; color: var(--teal-text);
+}
+.pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* BUTTONS */
+.btn-dark {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--text); color: #fff; border: none; border-radius: 60px;
+  padding: 15px 28px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+  cursor: pointer; width: 100%; transition: opacity 0.15s;
+}
+.btn-dark:active { transform: scale(0.98); }
+
+.btn-teal {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--teal); color: #fff; border: none; border-radius: 60px;
+  padding: 15px 28px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+  cursor: pointer; width: 100%; text-decoration: none; transition: opacity 0.15s;
+}
+.btn-teal:active { transform: scale(0.98); }
+
+/* QUIZ SCREEN */
+#s-quiz {
+  padding-top: 72px;
+  min-height: 100dvh;
+  align-items: center;
+}
+#q-wrap {
+  width: 100%; max-width: var(--max);
+  margin: 0 auto; padding: 32px var(--pad) 48px;
+}
+
+/* BADGE */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 60px; padding: 5px 13px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+.b-blue   { background: var(--blue-bg);   color: var(--blue-text); }
+.b-teal   { background: var(--teal-bg);   color: var(--teal-text); }
+.b-amber  { background: var(--amber-bg);  color: var(--amber-text); }
+.b-purple { background: var(--purple-bg); color: var(--purple-text); }
+.b-coral  { background: var(--coral-bg);  color: var(--coral-text); }
+
+/* QUESTION */
+.q-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(22px, 5vw, 30px);
+  font-weight: 400; line-height: 1.25;
+  margin-bottom: 28px;
+}
+
+/* SCALE */
+.scale-ends { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.scale-end { font-size: 12px; color: var(--hint); font-weight: 500; }
+.scale-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-bottom: 32px; }
+.sc-tile {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 18px 4px; text-align: center; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s; min-height: 44px;
+}
+.sc-tile:active { transform: scale(0.96); }
+.sc-tile.sel { border-color: var(--teal); background: var(--teal-bg); }
+.sc-num {
+  font-family: 'Instrument Serif', serif; font-size: 24px; font-weight: 400;
+  color: var(--muted); line-height: 1; display: block; transition: color 0.15s;
+}
+.sc-tile.sel .sc-num { color: var(--teal); }
+
+/* OPTIONS */
+.opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+.opt {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; cursor: pointer; text-align: left; width: 100%;
+  transition: border-color 0.15s, background 0.15s; min-height: 44px;
+  font-family: 'DM Sans', sans-serif;
+}
+.opt:active { transform: scale(0.98); }
+.opt.sel { border-color: var(--teal); background: var(--teal-bg); }
+.opt-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1.5px solid var(--border-h); flex-shrink: 0; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, background 0.15s;
+}
+.opt.sel .opt-radio { border-color: var(--teal); background: var(--teal); }
+.opt-dot { width: 8px; height: 8px; border-radius: 50%; background: white; opacity: 0; transition: opacity 0.15s; }
+.opt.sel .opt-dot { opacity: 1; }
+.opt-lbl { font-size: 15px; color: var(--text); line-height: 1.45; flex: 1; }
+
+/* BINARY */
+.bin-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 32px; }
+.bin-tile {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px 16px; text-align: center; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s; min-height: 44px;
+}
+.bin-tile:active { transform: scale(0.97); }
+.bin-tile.sel { border-color: var(--teal); background: var(--teal-bg); }
+.bin-main {
+  font-family: 'Instrument Serif', serif; font-size: 26px; font-weight: 400;
+  color: var(--text); display: block; margin-bottom: 4px; transition: color 0.15s;
+}
+.bin-tile.sel .bin-main { color: var(--teal); }
+.bin-sub { font-size: 12px; color: var(--hint); line-height: 1.4; transition: color 0.15s; }
+.bin-tile.sel .bin-sub { color: var(--teal-text); }
+
+/* NAV */
+.qnav { display: flex; align-items: center; justify-content: space-between; }
+.btn-back {
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; color: var(--muted); cursor: pointer;
+  padding: 8px 0; display: flex; align-items: center; gap: 4px;
+  min-height: 44px; transition: color 0.15s;
+}
+.btn-back:hover { color: var(--text); }
+.btn-back:disabled { opacity: 0; pointer-events: none; }
+.btn-next {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--text); color: #fff; border: none; border-radius: 60px;
+  padding: 12px 24px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+  cursor: pointer; opacity: 0.25; pointer-events: none;
+  transition: opacity 0.2s; min-height: 44px;
+}
+.btn-next.go { opacity: 1; pointer-events: auto; }
+.btn-next.go:active { transform: scale(0.97); }
+
+/* TRANSITION */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade { animation: fadeUp 350ms ease-out; }
+
+/* RESULT SCREEN */
+#s-result {
+  min-height: 100dvh; padding-top: 72px;
+}
+#r-wrap {
+  width: 100%; max-width: var(--max);
+  margin: 0 auto; padding: 32px var(--pad) 60px;
+}
+.res-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; margin-bottom: 20px;
+}
+.res-h {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(26px, 6vw, 38px); font-weight: 400; line-height: 1.2;
+  margin-bottom: 10px;
+}
+.res-h em { font-style: italic; color: var(--teal); }
+.res-sub { font-size: 15px; color: var(--muted); line-height: 1.65; margin-bottom: 28px; }
+
+/* score */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+.card-title { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--hint); margin-bottom: 16px; }
+.s-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.s-row:last-child { margin-bottom: 0; }
+.s-lbl { width: 96px; font-size: 13px; font-weight: 500; color: var(--muted); flex-shrink: 0; }
+.s-track { flex: 1; height: 4px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; }
+.s-fill { height: 4px; border-radius: 4px; width: 0%; transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.3s; }
+.f-e { background: #2C5F8A; }
+.f-u { background: var(--teal); }
+.f-s { background: #8B4513; }
+.s-val { font-size: 12px; font-weight: 600; color: var(--hint); width: 28px; text-align: right; flex-shrink: 0; }
+
+/* bucket */
+.bucket-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+.bucket-body { font-size: 14px; color: var(--muted); line-height: 1.8; }
+.bucket-body strong { color: var(--text); font-weight: 600; }
+.ins { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.ins:first-child { padding-top: 0; }
+.ins:last-child { border-bottom: none; padding-bottom: 0; }
+.ins-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex-shrink: 0; margin-top: 8px; }
+.ins p { font-size: 14px; color: var(--muted); line-height: 1.75; }
+.ins p strong { color: var(--text); font-weight: 600; }
+
+/* cta */
+.cta-teal { background: var(--teal-bg); border: 1px solid rgba(15,110,86,0.2); border-radius: 14px; padding: 24px; margin-bottom: 16px; text-align: center; }
+.cta-teal h3 { font-family: 'Instrument Serif', serif; font-size: 20px; font-weight: 400; color: var(--teal-text); margin-bottom: 8px; }
+.cta-teal p { font-size: 13px; color: var(--teal-text); opacity: 0.8; margin-bottom: 20px; line-height: 1.65; }
+.cta-plain { border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 16px; text-align: center; }
+.cta-plain h3 { font-family: 'Instrument Serif', serif; font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+.cta-plain p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.65; }
+
+.retake { display: block; text-align: center; font-size: 13px; color: var(--hint); cursor: pointer; margin-top: 8px; padding: 12px; text-decoration: underline; text-underline-offset: 3px; background: none; border: none; width: 100%; font-family: 'DM Sans', sans-serif; }
+.retake:hover { color: var(--muted); }
+
+@media (max-width: 480px) {
+  :root { --pad: 16px; }
+  .bin-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<div id="hdr">
+  <span class="hdr-logo">UNTIL</span>
+  <span class="hdr-step" id="step-lbl"></span>
+</div>
+
+<!-- LANDING -->
+<div class="screen on" id="s-land">
+  <div style="max-width:var(--max);width:100%;padding:60px var(--pad);margin:0 auto;display:flex;flex-direction:column;justify-content:center;min-height:100dvh;">
+    <p class="land-logo">UNTIL</p>
+    <h1 class="land-h1">What&rsquo;s the right model<br>for your <em>PT career?</em></h1>
+    <p class="land-p">Employed trainer. Independent at UNTIL. Your own gym. Three very different paths &mdash; only one of them fits where you are right now.</p>
+    <div class="land-meta">
+      <span class="pill">4&ndash;5 minutes</span>
+      <span class="pill">11 questions</span>
+      <span class="pill">Instant result</span>
+    </div>
+    <button class="btn-dark" id="start-btn">
+      Start the quiz
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="s-quiz">
+  <div id="q-wrap"></div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="s-result">
+  <div id="r-wrap"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+var Qs = [
+  {
+    dim: 'Risk & Reward', badge: 'b-blue', type: 'scale',
+    q: 'How important is income predictability to you?',
+    lo: "Doesn't matter", hi: 'Essential',
+    scores: [[0,0.5,1],[0,1,0.5],[0.5,1,0.5],[1,0.5,0],[1.5,0,0]]
+  },
+  {
+    dim: 'Risk & Reward', badge: 'b-blue', type: 'scale',
+    q: 'How confident are you in filling your own diary right now?',
+    lo: 'Not at all', hi: 'Fully booked',
+    scores: [[1.5,0,0],[1,0.5,0],[0,1.5,0],[0,1,1],[0,0.5,1.5]]
+  },
+  {
+    dim: 'Risk & Reward', badge: 'b-blue', type: 'choice',
+    q: 'Paying significant fixed monthly costs \u2014 rent, rates, equipment \u2014 regardless of how many sessions you do:',
+    options: [
+      { text: 'Would genuinely stress me out',          scores: [1,0.5,0] },
+      { text: 'Acceptable if kept lean and controlled', scores: [0,1.5,0] },
+      { text: 'The cost of building something real',    scores: [0,0,1.5] }
+    ]
+  },
+  {
+    dim: 'Operations & Control', badge: 'b-teal', type: 'binary',
+    q: 'Do you want to hire and manage a team of trainers?',
+    options: [
+      { text: 'Yes', sub: "That's part of the vision",      scores: [0,0,2] },
+      { text: 'No',  sub: 'I want to focus on training clients', scores: [0.5,1.5,0] }
+    ]
+  },
+  {
+    dim: 'Operations & Control', badge: 'b-teal', type: 'scale',
+    q: 'How much does controlling your own schedule matter to you?',
+    lo: 'Not much', hi: 'Everything',
+    scores: [[1.5,0,0],[1,0.5,0],[0,1,1],[0,1,1],[0,0.5,1.5]]
+  },
+  {
+    dim: 'Operations & Control', badge: 'b-teal', type: 'choice',
+    q: 'What matters most to you about where you train clients?',
+    options: [
+      { text: 'The team culture and people around me day-to-day',                    scores: [1.5,0,0] },
+      { text: 'The quality of the facility and the other professionals using it',    scores: [0,1.5,0] },
+      { text: 'That every detail of it reflects my brand',                           scores: [0,0,2] }
+    ]
+  },
+  {
+    dim: 'Brand & Identity', badge: 'b-amber', type: 'scale',
+    q: 'How important is it that your training space is entirely branded around you?',
+    lo: 'Not important', hi: 'Non-negotiable',
+    scores: [[1,0.5,0],[0.5,1,0],[0,1,0.5],[0,0.5,1.5],[0,0,2]]
+  },
+  {
+    dim: 'Brand & Identity', badge: 'b-amber', type: 'choice',
+    q: 'Where would you honestly place yourself right now?',
+    options: [
+      { text: 'Still building \u2014 growing my client base and developing as a trainer',     scores: [1.5,0.5,0] },
+      { text: 'Established \u2014 solid client base, ready to go fully independent',           scores: [0,2,0] },
+      { text: 'At scale \u2014 the reputation and clients to anchor my own facility',           scores: [0,0.5,2] }
+    ]
+  },
+  {
+    dim: 'Brand & Identity', badge: 'b-amber', type: 'scale',
+    q: "What's your honest appetite for financial risk?",
+    lo: 'Avoid it', hi: 'Embrace it',
+    scores: [[1.5,0,0],[1,0.5,0],[0,1.5,0],[0,0.5,1],[0,0,2]]
+  },
+  {
+    dim: 'Community & Growth', badge: 'b-purple', type: 'binary',
+    q: 'Would being around elite physios, nutritionists and psychologists every day make you a better trainer?',
+    options: [
+      { text: 'Yes', sub: 'That environment would sharpen me',        scores: [0,2,0] },
+      { text: 'No',  sub: 'I develop best within my own discipline',  scores: [0.5,0,0.5] }
+    ]
+  },
+  {
+    dim: 'Community & Growth', badge: 'b-purple', type: 'choice',
+    q: 'In five years, success looks like:',
+    options: [
+      { text: "I'm one of the best trainers in London, working somewhere I'm proud of",  scores: [1,1,0] },
+      { text: 'I run my own thriving PT business with full schedule freedom and no ceiling', scores: [0,2,0] },
+      { text: "I've built a fitness brand with a team and a space I own",                  scores: [0,0.5,2] }
+    ]
+  }
+];
+
+var Results = {
+  emp: {
+    icon: '\uD83C\uDFE2', iconBg: '#E6F1FB',
+    badge: 'b-blue', badgeText: 'Employment is your move',
+    headline: "You're built for high performance, not high risk.",
+    sub: "The structure of an employed PT role is right for where you are now \u2014 and that's a smart, self-aware call.",
+    insights: [
+      "Your focus is on <strong>training clients, not running a business</strong> \u2014 and that clarity matters. The floor plan, the kit, the client pipeline being handled for you is the right context for this stage.",
+      "There's a trade-off worth keeping in mind: a gym job keeps you inside one world. <strong>You won't get the referrals, the peer learning, or the cross-discipline thinking</strong> that come from being around physios, nutritionists and performance coaches every day. That gap compounds.",
+      "When your diary is full and the ceiling starts to feel real, <strong>UNTIL will be here</strong>. A lot of our top independent trainers were employed first."
+    ],
+    ctaType: 'plain',
+    ctaH: "When you're ready for the next step",
+    ctaP: "When employment starts to feel like a ceiling rather than a foundation, come and see what going independent at UNTIL looks like.",
+    ctaTxt: 'Explore UNTIL for the future'
+  },
+  until: {
+    icon: '\u25C6', iconBg: '#E1F5EE',
+    badge: 'b-teal', badgeText: 'UNTIL is your model',
+    headline: 'Ready to run your own business. Not to run a gym.',
+    sub: "That's a sharper distinction than most PTs make \u2014 and it's exactly the right one.",
+    insights: [
+      "You want to set your own rates, own your diary, and keep what you earn. You don't want the lease, the equipment costs, the landlord, or the pressure of running a whole facility. <strong>That's the gap UNTIL was built to fill.</strong>",
+      "Training in a building with <strong>600+ experts across 46 disciplines</strong> \u2014 physios, nutritionists, psychologists, strength coaches \u2014 changes how you train, how you price, and how fast your business grows. Employment silos you. A solo gym isolates you. UNTIL puts you in the right room, every day.",
+      "<strong>No ceiling. No landlord. No staff.</strong> Your PT business at full capacity inside a world-class facility \u2014 with a community that makes you sharper."
+    ],
+    ctaType: 'teal',
+    ctaH: 'See what your PT business looks like at UNTIL',
+    ctaP: 'Four London locations. Expanding into Dubai. Book a conversation \u2014 no obligation, no sales pitch.',
+    ctaTxt: 'Book a conversation'
+  },
+  studio: {
+    icon: '\uD83C\uDFDB\uFE0F', iconBg: '#FAECE7',
+    badge: 'b-coral', badgeText: 'Your own gym',
+    headline: "You're not building a client base. You're building a brand.",
+    sub: 'The ambition is right. Make sure the timing matches it.',
+    insights: [
+      "You want your name above the door and every detail of the space designed around your brand. If you have a full diary, the capital, and the appetite to hire and lead \u2014 <strong>that's a genuinely exciting path.</strong>",
+      "Before you sign a lease: can you fill the space from day one? Do you have 12 months of runway? Are you ready to manage staff, kit, compliance, and client generation simultaneously?",
+      "Many of UNTIL's top trainers used us as a <strong>launchpad</strong> \u2014 building their diary and revenue inside UNTIL, then opening their own gym with a full client book and proven income. That path is significantly less risky."
+    ],
+    ctaType: 'plain',
+    ctaH: "Whenever you're ready \u2014 let's talk",
+    ctaP: "Whether you're opening in 6 months or 2 years, UNTIL can be the bridge. Let's have a conversation about your timeline.",
+    ctaTxt: 'Speak to the UNTIL team'
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────────
+var cur = 0;
+var ans = new Array(11).fill(null);
+var sc = { emp: 0, until: 0, studio: 0 };
+
+// ── SCREENS ───────────────────────────────────────────────────
+function show(id) {
+  ['s-land','s-quiz','s-result'].forEach(function(s) {
+    document.getElementById(s).classList.remove('on');
+  });
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+// ── START ─────────────────────────────────────────────────────
+document.getElementById('start-btn').addEventListener('click', function() {
+  document.getElementById('hdr').classList.add('on');
+  cur = 0;
+  ans = new Array(11).fill(null);
+  show('s-quiz');
+  renderQ(0);
+});
+
+// ── RENDER ────────────────────────────────────────────────────
+function renderQ(idx) {
+  var q = Qs[idx];
+  document.getElementById('prog').style.width = (idx / 11 * 100) + '%';
+  document.getElementById('step-lbl').textContent = (idx + 1) + ' / 11';
+  window.scrollTo(0, 0);
+
+  var html = '<div class="fade">';
+  html += '<span class="badge ' + q.badge + '">' + q.dim + '</span>';
+  html += '<p class="q-title">' + q.q + '</p>';
+
+  if (q.type === 'scale')  html += buildScale(q, idx);
+  if (q.type === 'choice') html += buildChoice(q, idx);
+  if (q.type === 'binary') html += buildBinary(q, idx);
+
+  var backDis = idx === 0 ? ' disabled' : '';
+  var nextGo  = ans[idx] !== null ? ' go' : '';
+  var nextTxt = idx < 10 ? 'Continue &rarr;' : 'See my result &rarr;';
+
+  html += '<div class="qnav">';
+  html += '<button class="btn-back"' + backDis + ' id="btn-bk">&larr; Back</button>';
+  html += '<button class="btn-next' + nextGo + '" id="btn-nx">' + nextTxt + '</button>';
+  html += '</div></div>';
+
+  var wrap = document.getElementById('q-wrap');
+  wrap.innerHTML = html;
+
+  document.getElementById('btn-bk').addEventListener('click', goBack);
+  document.getElementById('btn-nx').addEventListener('click', goNext);
+}
+
+function buildScale(q, idx) {
+  var h = '<div class="scale-ends"><span class="scale-end">' + q.lo + '</span><span class="scale-end">' + q.hi + '</span></div>';
+  h += '<div class="scale-row">';
+  for (var i = 0; i < 5; i++) {
+    var sel = ans[idx] === i ? ' sel' : '';
+    h += '<div class="sc-tile' + sel + '" data-idx="' + idx + '" data-val="' + i + '" data-cls="sc-tile"><span class="sc-num">' + (i+1) + '</span></div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function buildChoice(q, idx) {
+  var h = '<div class="opts">';
+  for (var i = 0; i < q.options.length; i++) {
+    var sel = ans[idx] === i ? ' sel' : '';
+    h += '<button class="opt' + sel + '" data-idx="' + idx + '" data-val="' + i + '" data-cls="opt">';
+    h += '<span class="opt-radio"><span class="opt-dot"></span></span>';
+    h += '<span class="opt-lbl">' + q.options[i].text + '</span>';
+    h += '</button>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function buildBinary(q, idx) {
+  var h = '<div class="bin-row">';
+  for (var i = 0; i < q.options.length; i++) {
+    var sel = ans[idx] === i ? ' sel' : '';
+    h += '<div class="bin-tile' + sel + '" data-idx="' + idx + '" data-val="' + i + '" data-cls="bin-tile">';
+    h += '<span class="bin-main">' + q.options[i].text + '</span>';
+    h += '<span class="bin-sub">' + q.options[i].sub + '</span>';
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+// Event delegation for answer picking
+document.getElementById('q-wrap').addEventListener('click', function(e) {
+  var el = e.target.closest('[data-cls]');
+  if (!el) return;
+  var idx = parseInt(el.dataset.idx);
+  var val = parseInt(el.dataset.val);
+  var cls = el.dataset.cls;
+  pick(idx, val, el, cls);
+});
+
+function pick(idx, val, el, cls) {
+  ans[idx] = val;
+  document.querySelectorAll('.' + cls).forEach(function(e) { e.classList.remove('sel'); });
+  el.classList.add('sel');
+  var nxt = document.getElementById('btn-nx');
+  if (nxt) nxt.classList.add('go');
+  setTimeout(function() { if (cur === idx) goNext(); }, 480);
+}
+
+function goNext() {
+  if (ans[cur] === null) return;
+  if (cur < 10) { cur++; renderQ(cur); }
+  else showResult();
+}
+
+function goBack() {
+  if (cur > 0) { cur--; renderQ(cur); }
+}
+
+// ── SCORES ────────────────────────────────────────────────────
+function calcScores() {
+  sc = { emp: 0, until: 0, studio: 0 };
+  ans.forEach(function(a, i) {
+    if (a === null) return;
+    var s = Qs[i].scores ? Qs[i].scores[a] : Qs[i].options[a].scores;
+    sc.emp   += s[0];
+    sc.until  += s[1];
+    sc.studio += s[2];
+  });
+}
+
+function getOutcome() {
+  calcScores();
+  if (sc.emp >= 7 && sc.emp > sc.until && sc.emp > sc.studio) return 'emp';
+  if (sc.studio >= 9 && sc.studio > sc.until && sc.studio > sc.emp) return 'studio';
+  return 'until';
+}
+
+// ── RESULT ────────────────────────────────────────────────────
+var SUPA_URL  = 'https://zlcobijecirtkoxxyqlx.supabase.co';
+var SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpsY29iaWplY2lydGtveHh5cWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjA0NTAsImV4cCI6MjA4OTIzNjQ1MH0.25_VDdGAWBS6cfbe-3NZf_HwMsRlznws2k1v6nh3DdU';
+
+function submitToSupabase(outcome, scores, answers) {
+  fetch(SUPA_URL + '/rest/v1/quiz_submissions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      outcome:      outcome,
+      score_emp:    scores.emp,
+      score_until:  scores.until,
+      score_studio: scores.studio,
+      answers:      answers,
+      referrer:     document.referrer || null
+    })
+  }).catch(function(err) { console.warn('Supabase submit failed:', err); });
+}
+
+function showResult() {
+  var key = getOutcome();
+  var R = Results[key];
+  var MAX = 18.5;
+
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('step-lbl').textContent = 'Your result';
+
+  // Fire and forget — submit to Supabase
+  submitToSupabase(key, sc, ans);
+
+  var insHTML = R.insights.map(function(t) {
+    return '<div class="ins"><span class="ins-dot"></span><p>' + t + '</p></div>';
+  }).join('');
+
+  var ctaHTML = R.ctaType === 'teal'
+    ? '<div class="cta-teal"><h3>' + R.ctaH + '</h3><p>' + R.ctaP + '</p><a href="https://www.until.co.uk/members" target="_blank" class="btn-teal" style="text-decoration:none">' + R.ctaTxt + ' &rarr;</a></div>'
+    : '<div class="cta-plain"><h3>' + R.ctaH + '</h3><p>' + R.ctaP + '</p><a href="https://www.until.co.uk/members" target="_blank" class="btn-dark" style="text-decoration:none">' + R.ctaTxt + ' &rarr;</a></div>';
+
+  document.getElementById('r-wrap').innerHTML =
+    '<div class="res-icon" style="background:' + R.iconBg + '">' + R.icon + '</div>' +
+    '<span class="badge ' + R.badge + '" style="margin-bottom:14px">' + R.badgeText + '</span>' +
+    '<h1 class="res-h">' + R.headline + '</h1>' +
+    '<p class="res-sub">' + R.sub + '</p>' +
+    '<div class="card"><div class="card-title">Score breakdown</div>' +
+    '<div class="s-row"><span class="s-lbl">Employment</span><div class="s-track"><div class="s-fill f-e" id="fe"></div></div><span class="s-val" id="ve">&mdash;</span></div>' +
+    '<div class="s-row"><span class="s-lbl">UNTIL</span><div class="s-track"><div class="s-fill f-u" id="fu"></div></div><span class="s-val" id="vu">&mdash;</span></div>' +
+    '<div class="s-row"><span class="s-lbl">Own gym</span><div class="s-track"><div class="s-fill f-s" id="fs"></div></div><span class="s-val" id="vs">&mdash;</span></div>' +
+    '</div>' +
+    '<div class="bucket-card">' + insHTML + '</div>' +
+    ctaHTML +
+    '<button class="retake" id="retake-btn">&larr; Retake the assessment</button>';
+
+  document.getElementById('retake-btn').addEventListener('click', retake);
+
+  show('s-result');
+
+  setTimeout(function() {
+    document.getElementById('fe').style.width = (sc.emp   / MAX * 100) + '%';
+    document.getElementById('fu').style.width = (sc.until  / MAX * 100) + '%';
+    document.getElementById('fs').style.width = (sc.studio / MAX * 100) + '%';
+    document.getElementById('ve').textContent = sc.emp.toFixed(1);
+    document.getElementById('vu').textContent = sc.until.toFixed(1);
+    document.getElementById('vs').textContent = sc.studio.toFixed(1);
+  }, 300);
+}
+
+function retake() {
+  cur = 0;
+  ans = new Array(11).fill(null);
+  document.getElementById('prog').style.width = '0%';
+  document.getElementById('hdr').classList.remove('on');
+  show('s-land');
+}
+</script>
+</body>
+</html>
